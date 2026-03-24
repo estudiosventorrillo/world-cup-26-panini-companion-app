@@ -203,7 +203,9 @@
   /* Icono de flecha con rotación */
   .sort-arrow {
     transition: transform 0.2s ease;
-    display: inline-block;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
   .sort-arrow.desc { transform: rotate(180deg); }
 
@@ -437,10 +439,10 @@
       <div class="section-title">Tus cartas <span id="owned-count-label"></span></div>
       <div class="header-btns">
         <button class="btn-icon" onclick="toggleSortDirection('owned')" title="Invertir orden">
-          <span class="sort-arrow asc" id="sort-arrow-owned">&#129145;</span>
+          <span class="sort-arrow asc" id="sort-arrow-owned"><i class="bi bi-arrow-down"></i></span>
         </button>
         <button class="btn-icon" onclick="openFilterModal('owned')" title="Filtrar por categoría" style="position:relative;">
-          &#128100;
+          <i class="bi bi-funnel"></i>
           <div class="filter-indicator" id="filter-indicator-owned" style="display:none;">0</div>
         </button>
       </div>
@@ -456,10 +458,10 @@
       <div class="section-title">Te faltan <span id="missing-count-label"></span></div>
       <div class="header-btns">
         <button class="btn-icon" onclick="toggleSortDirection('missing')" title="Invertir orden">
-          <span class="sort-arrow asc" id="sort-arrow-missing">&#129145;</span>
+          <span class="sort-arrow asc" id="sort-arrow-missing"><i class="bi bi-arrow-down"></i></span>
         </button>
         <button class="btn-icon" onclick="openFilterModal('missing')" title="Filtrar por categoría" style="position:relative;">
-          &#128100;
+          <i class="bi bi-funnel"></i>
           <div class="filter-indicator" id="filter-indicator-missing" style="display:none;">0</div>
         </button>
       </div>
@@ -479,7 +481,20 @@
       </div>
       <div id="fav-preview" style="margin-top:14px"></div>
     </div>
-    <div class="section-title" style="margin-bottom:12px;">Cartas Guardadas <span id="fav-total-label"></span></div>
+    
+    <div class="section-header-controls" style="margin-bottom: 12px;">
+      <div class="section-title">Cartas Guardadas <span id="fav-total-label"></span></div>
+      <div class="header-btns">
+        <button class="btn-icon" onclick="toggleSortDirection('fav')" title="Invertir orden">
+          <span class="sort-arrow asc" id="sort-arrow-fav"><i class="bi bi-arrow-down"></i></span>
+        </button>
+        <button class="btn-icon" onclick="openFilterModal('fav')" title="Filtrar por categoría" style="position:relative;">
+          <i class="bi bi-funnel"></i>
+          <div class="filter-indicator" id="filter-indicator-fav" style="display:none;">0</div>
+        </button>
+      </div>
+    </div>
+
     <div class="toggle-view" style="margin-bottom: 16px;">
       <button class="tv-btn on" id="ff-all" onclick="setFavFilter('all')">Todas</button>
       <button class="tv-btn" id="ff-favs" onclick="setFavFilter('favs')">Favoritos (★)</button>
@@ -487,7 +502,7 @@
     </div>
     <div id="fav-list" class="list-view"></div>
     <div class="empty-state" id="fav-empty">
-      <div style="text-align:center; padding: 20px; color: var(--text-dim);">No hay cartas que mostrar en esta vista.</div>
+      <div style="text-align:center; padding: 20px; color: var(--text-dim);">No hay cartas que coincidan con los filtros en esta vista.</div>
     </div>
   </div>
 
@@ -594,8 +609,8 @@ const CATEGORIES = [
 ];
 
 let owned = []; let recent = []; let favs = [];
-let activeFiltersOwned = []; let activeFiltersMissing = [];
-let sortDirectionOwned = 1; let sortDirectionMissing = 1;
+let activeFiltersOwned = []; let activeFiltersMissing = []; let activeFiltersFav = [];
+let sortDirectionOwned = 1; let sortDirectionMissing = 1; let sortDirectionFav = 1;
 let activeFilterFav = 'all'; 
 
 let pendingFavNum = null; let pendingDelNum = null;
@@ -621,13 +636,11 @@ function init() {
   
   renderAll();
 
-  // Mostrar tutorial si es la primera vez
   if (!load('p26_tutorial_seen', false)) {
     openModal('modal-tutorial');
   }
 }
 
-// Función para cerrar el tutorial y guardar que ya se vio
 function closeTutorial() {
   save('p26_tutorial_seen', true);
   closeModal('modal-tutorial');
@@ -759,7 +772,9 @@ function renderRecent() { document.getElementById('recent-grid').innerHTML = rec
 
 function openFilterModal(type) {
   currentFilterType = type;
-  tempModalFilters = [...(type === 'owned' ? activeFiltersOwned : activeFiltersMissing)];
+  if (type === 'owned') tempModalFilters = [...activeFiltersOwned];
+  else if (type === 'missing') tempModalFilters = [...activeFiltersMissing];
+  else if (type === 'fav') tempModalFilters = [...activeFiltersFav];
   
   const grid = document.getElementById('filter-modal-grid');
   grid.innerHTML = CATEGORIES.map(cat => {
@@ -780,7 +795,8 @@ function toggleFilterChip(chipEl) {
 
 function applyFilters() {
   if (currentFilterType === 'owned') { activeFiltersOwned = [...tempModalFilters]; renderOwned(); } 
-  else { activeFiltersMissing = [...tempModalFilters]; renderMissing(); }
+  else if (currentFilterType === 'missing') { activeFiltersMissing = [...tempModalFilters]; renderMissing(); }
+  else if (currentFilterType === 'fav') { activeFiltersFav = [...tempModalFilters]; renderFavs(); }
   updateFilterIndicators(); closeModal('modal-filter');
 }
 
@@ -793,16 +809,23 @@ function clearFilters() {
 function updateFilterIndicators() {
   const indOwned = document.getElementById('filter-indicator-owned');
   const indMissing = document.getElementById('filter-indicator-missing');
+  const indFav = document.getElementById('filter-indicator-fav');
+
   if (activeFiltersOwned.length > 0) { indOwned.textContent = activeFiltersOwned.length; indOwned.style.display = 'flex'; } 
   else { indOwned.style.display = 'none'; }
+  
   if (activeFiltersMissing.length > 0) { indMissing.textContent = activeFiltersMissing.length; indMissing.style.display = 'flex'; } 
   else { indMissing.style.display = 'none'; }
+
+  if (activeFiltersFav.length > 0) { indFav.textContent = activeFiltersFav.length; indFav.style.display = 'flex'; } 
+  else { indFav.style.display = 'none'; }
 }
 
 function toggleSortDirection(type) {
   const arrow = document.getElementById('sort-arrow-' + type);
   if (type === 'owned') { sortDirectionOwned *= -1; arrow.classList.toggle('desc', sortDirectionOwned === -1); renderOwned(); } 
-  else { sortDirectionMissing *= -1; arrow.classList.toggle('desc', sortDirectionMissing === -1); renderMissing(); }
+  else if (type === 'missing') { sortDirectionMissing *= -1; arrow.classList.toggle('desc', sortDirectionMissing === -1); renderMissing(); }
+  else if (type === 'fav') { sortDirectionFav *= -1; arrow.classList.toggle('desc', sortDirectionFav === -1); renderFavs(); }
 }
 
 function renderOwned() {
@@ -878,8 +901,15 @@ function setFavFilter(mode) {
 
 function renderFavs() {
   let filteredFavs = favs;
+  
   if (activeFilterFav === 'favs') { filteredFavs = favs.filter(f => f.isFav !== false); } 
   else if (activeFilterFav === 'res') { filteredFavs = favs.filter(f => f.isFav === false); }
+
+  if (activeFiltersFav.length > 0) { 
+    filteredFavs = filteredFavs.filter(f => activeFiltersFav.includes(getCardDetails(f.num).key)); 
+  }
+
+  filteredFavs.sort((a, b) => (a.num - b.num) * sortDirectionFav);
 
   document.getElementById('fav-total-label').textContent = `(${filteredFavs.length})`;
   const list = document.getElementById('fav-list'); const empty = document.getElementById('fav-empty');
