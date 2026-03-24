@@ -1,0 +1,946 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>FIFA World Cup 2026 • Companion Álbum Panini</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@400;600;700&family=Barlow:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+<style>
+  :root {
+    --green-dark:   #0a2e0f;
+    --green-mid:    #1a5c24;
+    --green-light:  #2d8a3e;
+    --green-bright: #4caf50;
+    --yellow-gold:  #f5c518;
+    --yellow-light: #ffe066;
+    --yellow-pale:  #fff9d6;
+    --white:        #ffffff;
+    --gray-soft:    #1e3822;
+    --gray-border:  #2d5c35;
+    --text-main:    #e8f5e9;
+    --text-dim:     #8fba94;
+    --card-bg:      #0f2a14;
+    --shadow:       0 4px 24px rgba(0,0,0,0.5);
+    --radius:       10px;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  
+  /* Scroll suave general para la app */
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--green-dark);
+    background-image:
+      radial-gradient(ellipse at 20% 10%, rgba(76,175,80,0.08) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 90%, rgba(245,197,24,0.06) 0%, transparent 50%),
+      repeating-linear-gradient(0deg, transparent, transparent 59px, rgba(255,255,255,0.015) 60px),
+      repeating-linear-gradient(90deg, transparent, transparent 59px, rgba(255,255,255,0.015) 60px);
+    color: var(--text-main);
+    font-family: 'Barlow', sans-serif;
+    font-size: 15px;
+    
+    /* FIX MÓVILES: 100vh para navegadores viejos, 100dvh para la barra dinámica en Chrome/Safari */
+    min-height: 100vh;
+    min-height: 100dvh; 
+    
+    -webkit-tap-highlight-color: transparent; /* Quita el recuadro azul nativo de tap en móviles */
+  }
+
+  /* HEADER */
+  header {
+    background: linear-gradient(135deg, var(--green-dark) 0%, #0d2211 60%, #0a1f0d 100%);
+    border-bottom: 3px solid var(--yellow-gold);
+    
+    /* FIX MÓVILES: padding-top con safe-area para respetar el notch/cámara del móvil */
+    padding: calc(18px + env(safe-area-inset-top)) 24px 14px;
+    
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 20px rgba(0,0,0,0.6);
+    cursor: pointer; 
+    transition: background 0.2s;
+  }
+  header:hover { background: linear-gradient(135deg, #0d2211 0%, #0a1f0d 60%, var(--green-dark) 100%); }
+  .header-logo {
+    font-family: 'Bebas Neue', cursive; font-size: 2.2rem; line-height: 1;
+    color: var(--yellow-gold); letter-spacing: 2px; text-shadow: 0 0 20px rgba(245,197,24,0.4);
+  }
+  .header-logo span { color: var(--white); }
+  .header-sub { font-family: 'Barlow Condensed', sans-serif; font-size: 0.78rem; font-weight: 600; letter-spacing: 3px; color: var(--text-dim); text-transform: uppercase; margin-top: 2px; }
+
+  /* LAYOUT */
+  /* FIX MÓVILES: padding-bottom con safe-area para respetar la barra de home de iOS/Android */
+  .app { max-width: 1100px; margin: 0 auto; padding: 24px 16px calc(60px + env(safe-area-inset-bottom)); }
+
+  /* PANEL */
+  .panel { display: none; animation: fadeIn 0.25s ease; }
+  .panel.active { display: block; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* STATS BAR (Navegación Principal - 2x2) */
+  .stats-bar { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; margin-bottom: 30px; }
+  .stat-card { 
+    background: var(--card-bg); border: 1px solid var(--gray-border); border-radius: var(--radius); 
+    padding: 14px 16px; text-align: center; position: relative; overflow: hidden;
+  }
+  .stat-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--yellow-gold); }
+  
+  .stat-card.tab-trigger { cursor: pointer; transition: transform 0.15s, border-color 0.2s, background 0.2s, box-shadow 0.2s; }
+  .stat-card.tab-trigger:hover { transform: translateY(-2px); border-color: rgba(245,197,24,0.5); box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
+  .stat-card.tab-trigger:active { transform: scale(0.96); }
+  .stat-card.tab-trigger.active-tab { 
+    border-color: var(--yellow-gold); background: rgba(245,197,24,0.08); 
+    box-shadow: 0 0 15px rgba(245,197,24,0.15); 
+  }
+
+  .stat-card.missing::before { background: var(--green-bright); }
+  .stat-card.secondary::before { background: #42a5f5; }
+  .stat-num { font-family: 'Bebas Neue', cursive; font-size: 2.4rem; line-height: 1; color: var(--yellow-gold); }
+  .stat-label { font-family: 'Barlow Condensed', sans-serif; font-size: 0.7rem; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: var(--text-dim); margin-top: 4px; }
+  .stat-label span { color: var(--text-main); font-weight: 700; }
+  .progress-bar-wrap { background: var(--gray-border); border-radius: 4px; height: 6px; margin-top: 8px; overflow: hidden; }
+  .progress-bar { height: 100%; background: linear-gradient(90deg, var(--green-bright), var(--yellow-gold)); border-radius: 4px; transition: width 0.6s ease; }
+
+  /* SEARCH INPUT */
+  .search-box { background: var(--card-bg); border: 2px solid var(--gray-border); border-radius: var(--radius); padding: 20px; margin-bottom: 20px; transition: border-color 0.2s; }
+  .search-box:focus-within { border-color: var(--yellow-gold); }
+  .search-row { display: flex; gap: 8px; align-items: center; flex-wrap: nowrap; }
+  .search-label { font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 0.8rem; letter-spacing: 2px; text-transform: uppercase; color: var(--text-dim); margin-bottom: 10px; }
+  
+  /* Inputs optimizados */
+  input[type="number"], input[type="text"] { background: rgba(255,255,255,0.05); border: 1px solid var(--gray-border); border-radius: 6px; color: var(--white); font-family: 'Barlow Condensed', sans-serif; font-size: 1.1rem; font-weight: 600; padding: 10px 14px; outline: none; transition: border-color 0.2s, background 0.2s; flex: 1 1 120px; }
+  input[type="number"]:focus, input[type="text"]:focus { border-color: var(--yellow-gold); background: rgba(245,197,24,0.06); }
+  
+  /* Ocultar las flechas molestas de los inputs numéricos */
+  input[type="number"]::-webkit-inner-spin-button, 
+  input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+  input[type="number"] { 
+    -moz-appearance: textfield; 
+    appearance: textfield;      
+  }
+
+  /* BOTONES GENERALES */
+  .btn { font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 0.88rem; letter-spacing: 1.5px; text-transform: uppercase; border: none; border-radius: 6px; padding: 10px 20px; cursor: pointer; transition: transform 0.1s, box-shadow 0.2s, opacity 0.2s; white-space: nowrap; text-align: center; }
+  .btn:active { transform: scale(0.97); }
+  .btn-primary { background: var(--yellow-gold); color: var(--green-dark); box-shadow: 0 2px 12px rgba(245,197,24,0.3); flex-shrink: 0; }
+  .btn-primary:hover { box-shadow: 0 4px 20px rgba(245,197,24,0.5); }
+  .btn-secondary { background: var(--gray-soft); color: var(--text-main); border: 1px solid var(--gray-border); }
+  .btn-danger { background: rgba(220,53,69,0.15); color: #ff6b6b; border: 1px solid rgba(220,53,69,0.3); }
+
+  /* FEEDBACK MSG */
+  #msg-box { margin-top: 14px; min-height: 48px; transition: opacity 0.3s ease; }
+  .msg { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-radius: 8px; font-family: 'Barlow Condensed', sans-serif; font-weight: 600; font-size: 1rem; letter-spacing: 0.5px; animation: slideIn 0.25s ease; }
+  @keyframes slideIn { from { opacity: 0; transform: translateX(-8px); } to { opacity: 1; transform: translateX(0); } }
+  .msg-new { background: rgba(76,175,80,0.15); border: 1px solid var(--green-bright); color: #a5d6a7; }
+  .msg-dup { background: rgba(245,197,24,0.12); border: 1px solid rgba(245,197,24,0.4); color: var(--yellow-light); }
+  .msg-err { background: rgba(220,53,69,0.12); border: 1px solid rgba(220,53,69,0.35); color: #ff6b6b; }
+  .msg-icon { font-size: 1.3rem; font-weight: bold; }
+  .msg-cat { display: inline-block; font-size: 0.7rem; padding: 2px 8px; border-radius: 4px; margin-left: 8px; letter-spacing: 1px; vertical-align: middle; white-space: nowrap; }
+
+  /* TITULOS SECCION & CONTROLES (Estilo Clash Royale) */
+  .section-header-controls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+    gap: 12px;
+  }
+
+  .section-title { 
+    font-family: 'Bebas Neue', cursive; 
+    font-size: 1.3rem; 
+    letter-spacing: 2px; 
+    color: var(--yellow-gold); 
+    display: flex; 
+    align-items: center; 
+    gap: 10px; 
+    margin-bottom: 0; /* Reset */
+  }
+  .section-title span { font-family: 'Barlow Condensed', sans-serif; font-size: 0.8rem; font-weight: 600; color: var(--text-dim); letter-spacing: 1px; }
+
+  .header-btns {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+  }
+
+  .btn-icon {
+    background: var(--card-bg);
+    border: 1px solid var(--gray-border);
+    border-radius: 6px;
+    color: var(--text-dim);
+    width: 38px;
+    height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 1.2rem;
+  }
+  .btn-icon:hover {
+    border-color: var(--yellow-gold);
+    color: var(--yellow-gold);
+    background: rgba(245,197,24,0.05);
+  }
+  .btn-icon.active {
+    background: var(--yellow-gold);
+    color: var(--green-dark);
+    border-color: var(--yellow-gold);
+  }
+
+  /* Icono de flecha con rotación */
+  .sort-arrow {
+    transition: transform 0.2s ease;
+    display: inline-block;
+  }
+  .sort-arrow.desc { transform: rotate(180deg); }
+
+  /* Indicador de filtro activo en el botón */
+  .filter-indicator {
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    background: var(--green-bright);
+    color: var(--green-dark);
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    font-size: 0.65rem;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid var(--green-dark);
+  }
+
+  /* MODAL DE FILTROS (Basado en imagen 3) */
+  .filter-modal {
+    max-width: 450px;
+    padding: 20px;
+  }
+  .filter-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+    margin: 16px 0 24px;
+    max-height: 300px;
+    overflow-y: auto;
+    padding-right: 5px;
+  }
+
+  /* Chips dentro del modal de filtro */
+  .filter-chip {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 600;
+    font-size: 0.8rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 10px;
+    border-radius: 8px;
+    border: 2px solid var(--gray-border);
+    background: rgba(255,255,255,0.03);
+    color: var(--text-dim);
+    cursor: pointer;
+    transition: all 0.15s;
+    text-align: center;
+    user-select: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .filter-chip:hover { border-color: rgba(255,255,255,0.1); color: var(--white); }
+  
+  /* Colores de tag activo en modal */
+  .filter-chip.on {
+    color: var(--green-dark);
+    font-weight: 700;
+  }
+  .filter-chip.cat-golden.on   { background: #f5c518; border-color: #f5c518; }
+  .filter-chip.cat-fanfav.on   { background: #ff9800; border-color: #ff9800; color: #fff; }
+  .filter-chip.cat-escudo.on   { background: #ffeb3b; border-color: #ffeb3b; }
+  .filter-chip.cat-icon.on     { background: #e91e63; border-color: #e91e63; color: #fff; }
+  .filter-chip.cat-normal.on   { background: #4caf50; border-color: #4caf50; }
+  .filter-chip.cat-contender.on{ background: #42a5f5; border-color: #42a5f5; }
+  .filter-chip.cat-keeper.on   { background: #ab47bc; border-color: #ab47bc; color: #fff; }
+  .filter-chip.cat-rock.on     { background: #78909c; border-color: #78909c; color: #fff; }
+  .filter-chip.cat-maestro.on  { background: #26c6da; border-color: #26c6da; }
+  .filter-chip.cat-machine.on  { background: #ef5350; border-color: #ef5350; color: #fff; }
+  .filter-chip.cat-rookie.on   { background: #ffa726; border-color: #ffa726; }
+  .filter-chip.cat-special.on  { background: #ec407a; border-color: #ec407a; color: #fff; }
+
+  /* RECENT GRID STICKERS */
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(72px, 1fr)); gap: 6px; margin-bottom: 30px; }
+  .sticker { aspect-ratio: 3/4; border-radius: 6px; display: flex; flex-direction: column; align-items: center; justify-content: center; font-family: 'Bebas Neue', cursive; font-size: 1.15rem; letter-spacing: 1px; border: 2px solid; cursor: default; transition: transform 0.15s, box-shadow 0.15s; position: relative; overflow: hidden; }
+  .sticker.owned { border-color: currentColor; color: inherit; }
+  
+  .sticker .fav-icon { position: absolute; top: 1px; right: 3px; font-size: 0.95rem; color: var(--yellow-gold); display: none; text-shadow: 0px 1px 4px rgba(0,0,0,0.8); line-height: 1; }
+  .sticker .note-icon { position: absolute; top: 1px; left: 4px; font-size: 0.8rem; color: #42a5f5; display: none; text-shadow: 0px 1px 4px rgba(0,0,0,0.8); line-height: 1; font-family: sans-serif; font-weight: 900;}
+  .sticker.faved .fav-icon { display: block; }
+  .sticker.has-note .note-icon { display: block; }
+
+  .sticker.cat-golden  { color: #f5c518; background: rgba(245,197,24,0.12); }
+  .sticker.cat-fanfav  { color: #ff9800; background: rgba(255,152,0,0.12); }
+  .sticker.cat-escudo  { color: #ffeb3b; background: rgba(255,235,59,0.12); }
+  .sticker.cat-icon    { color: #e91e63; background: rgba(233,30,99,0.12); }
+  .sticker.cat-normal  { color: #4caf50; background: rgba(76,175,80,0.12); }
+  .sticker.cat-contender { color: #42a5f5; background: rgba(66,165,245,0.12); }
+  .sticker.cat-keeper  { color: #ab47bc; background: rgba(171,71,188,0.12); }
+  .sticker.cat-rock    { color: #78909c; background: rgba(120,144,156,0.12); }
+  .sticker.cat-maestro { color: #26c6da; background: rgba(38,198,218,0.12); }
+  .sticker.cat-machine { color: #ef5350; background: rgba(239,83,80,0.12); }
+  .sticker.cat-rookie  { color: #ffa726; background: rgba(255,167,38,0.12); }
+  .sticker.cat-special { color: #ec407a; background: rgba(236,64,122,0.12); }
+
+  .sticker .cat-tiny { font-family: 'Barlow Condensed', sans-serif; font-size: 0.45rem; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; opacity: 0.7; margin-top: 2px; text-align: center; line-height: 1.1; max-width: 95%; }
+
+  /* LIST VIEW */
+  .list-view { display: flex; flex-direction: column; gap: 6px; }
+  .list-item { 
+    display: flex; align-items: center; gap: 10px; background: var(--card-bg); 
+    border: 1px solid var(--gray-border); border-radius: 8px; padding: 10px 14px; transition: border-color 0.2s; 
+  }
+  .list-item:hover { border-color: var(--gray-soft); }
+  
+  .list-num { font-family: 'Bebas Neue', cursive; font-size: 1.4rem; min-width: 45px; flex-shrink: 0; color: var(--yellow-gold); }
+  
+  .list-cat-badge { 
+    font-family: 'Barlow Condensed', sans-serif; font-size: 0.65rem; font-weight: 700; 
+    letter-spacing: 1.5px; text-transform: uppercase; padding: 4px 8px; border-radius: 4px; 
+    background: rgba(255,255,255,0.07); flex-shrink: 0;
+    width: 90px; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  
+  .list-fav-tag { 
+    font-family: 'Barlow Condensed', sans-serif; font-size: 0.75rem; color: var(--text-main); 
+    flex: 1; font-style: italic; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  
+  .list-actions { display: flex; gap: 6px; flex-shrink: 0; justify-content: flex-end; }
+  .list-actions .btn { width: 76px; padding: 6px 0; font-size: 0.75rem; display: flex; justify-content: center; align-items: center; }
+
+  /* FAVORITES PANEL */
+  .fav-card { background: var(--card-bg); border: 1px solid rgba(245,197,24,0.25); border-radius: var(--radius); padding: 16px; display: flex; align-items: center; gap: 14px; transition: border-color 0.2s; }
+  .fav-card:hover { border-color: rgba(245,197,24,0.5); }
+  .fav-number { font-family: 'Bebas Neue', cursive; font-size: 2.2rem; line-height: 1; color: var(--yellow-gold); min-width: 60px; text-align: center; }
+  .fav-info { flex: 1; }
+  .fav-name { font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 1rem; color: var(--white); }
+  .fav-cat-label { font-size: 0.72rem; font-family: 'Barlow Condensed', sans-serif; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-dim); margin-top: 2px; }
+  
+  .fav-owned-badge { font-family: 'Barlow Condensed', sans-serif; font-size: 0.7rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; padding: 3px 9px; border-radius: 4px; flex-shrink: 0; border: 1px solid transparent; }
+  .fav-owned-badge.yes { background: rgba(76,175,80,0.15); color: #a5d6a7; border-color: rgba(76,175,80,0.3); }
+  .fav-owned-badge.no  { background: rgba(220,53,69,0.15); color: #ff6b6b; border-color: rgba(220,53,69,0.3); }
+
+  /* MODAL GENERAL */
+  .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 200; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
+  .modal-overlay.open { display: flex; }
+  .modal { background: #0e2514; border: 2px solid var(--yellow-gold); border-radius: 14px; padding: 28px; max-width: 400px; width: 90%; animation: popIn 0.2s ease; position: relative; }
+  @keyframes popIn { from { transform: scale(0.93); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+  .modal-title { font-family: 'Bebas Neue', cursive; font-size: 1.6rem; color: var(--yellow-gold); letter-spacing: 2px; }
+  .modal-sub { font-family: 'Barlow Condensed', sans-serif; font-size: 0.9rem; color: var(--text-dim); margin-bottom: 20px; }
+  .modal-btns { display: flex; justify-content: flex-end; gap: 10px; margin-top: 24px; }
+
+  .toggle-view { display: flex; background: var(--card-bg); border-radius: 6px; overflow: hidden; border: 1px solid var(--gray-border); margin-bottom: 16px; }
+  .tv-btn { flex: 1; background: none; border: none; color: var(--text-dim); font-family: 'Barlow Condensed', sans-serif; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; padding: 8px 12px; cursor: pointer; font-size: 0.9rem; transition: background 0.15s, color 0.15s; }
+  .tv-btn.on { background: var(--yellow-gold); color: var(--green-dark); }
+
+  /* FOOTER CREDITS */
+  .credits {
+    text-align: center;
+    margin-top: 40px;
+    padding-top: 24px;
+    border-top: 1px solid var(--gray-border);
+    color: var(--text-dim);
+    font-family: 'Barlow Condensed', sans-serif;
+    letter-spacing: 1px;
+  }
+  .credits .mb-2 { margin-bottom: 14px; font-size: 0.95rem; }
+  .social-links { display: flex; justify-content: center; gap: 20px; }
+  .social-links a { color: var(--text-dim); font-size: 1.4rem; transition: color 0.2s, transform 0.2s; display: inline-block; }
+  .social-links a:hover { color: var(--yellow-gold); transform: translateY(-2px); }
+
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: var(--green-dark); }
+  ::-webkit-scrollbar-thumb { background: var(--gray-border); border-radius: 3px; }
+
+  /* RESPONSIVE AJUSTES */
+  @media (max-width: 600px) {
+    .header-logo { font-size: 1.6rem; }
+    .stats-bar { grid-template-columns: repeat(2, 1fr); }
+    .list-item { gap: 6px; padding: 10px 8px; }
+    .list-cat-badge { width: 75px; font-size: 0.6rem; padding: 4px; }
+    .list-actions .btn { width: 68px; font-size: 0.7rem; }
+    .fav-card { flex-wrap: wrap; }
+    .fav-info { min-width: 100%; margin-bottom: 8px; }
+    .fav-owned-badge { margin-right: auto; }
+    .filter-grid { grid-template-columns: 1fr; } 
+  }
+</style>
+</head>
+<body ontouchstart=""> 
+
+<header onclick="window.scrollTo({ top: 0, behavior: 'smooth' })" title="Volver arriba">
+  <div>
+    <div class="header-logo">FIFA WORLD CUP <span>2026</span></div>
+    <div class="header-sub">FAN-MADE COMPANION • ÁLBUM PANINI ESPAÑA</div>
+  </div>
+</header>
+
+<div class="app">
+
+  <div class="stats-bar" id="stats-bar">
+    <div class="stat-card tab-trigger active-tab" onclick="openTab('registrar', this)">
+      <div class="stat-num" style="color:var(--white); font-size: 2.5rem; margin-top: -3px; line-height: 1;">+</div>
+      <div class="stat-label">Registrar</div>
+    </div>
+    <div class="stat-card tab-trigger" onclick="openTab('mis-cromos', this)">
+      <div class="stat-num" id="s-owned">0</div>
+      <div class="stat-label">Tienes (<span id="s-owned-pct">0%</span>)</div>
+      <div class="progress-bar-wrap"><div class="progress-bar" id="progress" style="width:0%"></div></div>
+    </div>
+    <div class="stat-card missing tab-trigger" onclick="openTab('faltan', this)">
+      <div class="stat-num" id="s-missing">630</div>
+      <div class="stat-label">Te faltan</div>
+    </div>
+    <div class="stat-card secondary tab-trigger" onclick="openTab('favoritos', this)">
+      <div class="stat-num" id="s-guardados" style="color:#42a5f5;">0</div>
+      <div class="stat-label">Guardados</div>
+    </div>
+  </div>
+
+  <div class="panel active" id="tab-registrar">
+    <div class="search-box">
+      <div class="search-label">Añadir cromo a tu álbum</div>
+      <div class="search-row">
+        <input type="number" id="input-add" placeholder="Nº cromo…" min="1" max="630" inputmode="numeric" pattern="[0-9]*">
+        <button class="btn btn-primary" onclick="addSticker()">Añadir</button>
+      </div>
+      <div id="msg-box"></div>
+    </div>
+    <div class="section-title">Últimos añadidos</div>
+    <div id="recent-grid" class="card-grid"></div>
+  </div>
+
+  <div class="panel" id="tab-mis-cromos">
+    <div class="section-header-controls">
+      <div class="section-title">Tus cartas <span id="owned-count-label"></span></div>
+      <div class="header-btns">
+        <button class="btn-icon" onclick="toggleSortDirection('owned')" title="Invertir orden">
+          <span class="sort-arrow asc" id="sort-arrow-owned">&#129145;</span>
+        </button>
+        <button class="btn-icon" onclick="openFilterModal('owned')" title="Filtrar por categoría" style="position:relative;">
+          &#128100;
+          <div class="filter-indicator" id="filter-indicator-owned" style="display:none;">0</div>
+        </button>
+      </div>
+    </div>
+    <div id="owned-list" class="list-view"></div>
+    <div class="empty-state" id="owned-empty" style="display:none">
+      <div style="text-align:center; padding: 20px; color: var(--text-dim);">No tienes cartas que coincidan con los filtros.</div>
+    </div>
+  </div>
+
+  <div class="panel" id="tab-faltan">
+    <div class="section-header-controls">
+      <div class="section-title">Te faltan <span id="missing-count-label"></span></div>
+      <div class="header-btns">
+        <button class="btn-icon" onclick="toggleSortDirection('missing')" title="Invertir orden">
+          <span class="sort-arrow asc" id="sort-arrow-missing">&#129145;</span>
+        </button>
+        <button class="btn-icon" onclick="openFilterModal('missing')" title="Filtrar por categoría" style="position:relative;">
+          &#128100;
+          <div class="filter-indicator" id="filter-indicator-missing" style="display:none;">0</div>
+        </button>
+      </div>
+    </div>
+    <div id="missing-list" class="list-view"></div>
+    <div class="empty-state" id="missing-empty" style="display:none">
+      <div style="text-align:center; padding: 20px; color: var(--text-dim);">No faltan cartas que coincidan con los filtros.</div>
+    </div>
+  </div>
+
+  <div class="panel" id="tab-favoritos">
+    <div class="search-box" style="margin-bottom: 30px;">
+      <div class="search-label">Buscar para guardar reserva o favorito</div>
+      <div class="search-row">
+        <input type="number" id="fav-num-input" placeholder="Nº cromo…" min="1" max="630" inputmode="numeric" pattern="[0-9]*">
+        <button class="btn btn-primary" onclick="searchFav()">Buscar</button>
+      </div>
+      <div id="fav-preview" style="margin-top:14px"></div>
+    </div>
+    <div class="section-title" style="margin-bottom:12px;">Cartas Guardadas <span id="fav-total-label"></span></div>
+    <div class="toggle-view" style="margin-bottom: 16px;">
+      <button class="tv-btn on" id="ff-all" onclick="setFavFilter('all')">Todas</button>
+      <button class="tv-btn" id="ff-favs" onclick="setFavFilter('favs')">Favoritos (★)</button>
+      <button class="tv-btn" id="ff-res" onclick="setFavFilter('res')">Reservas</button>
+    </div>
+    <div id="fav-list" class="list-view"></div>
+    <div class="empty-state" id="fav-empty">
+      <div style="text-align:center; padding: 20px; color: var(--text-dim);">No hay cartas que mostrar en esta vista.</div>
+    </div>
+  </div>
+
+  <footer class="credits">
+      <p class="mb-2">Designed and Developed by Juan Luis Valverde</p>
+      <div class="social-links">
+          <a href="https://www.linkedin.com/in/juanluis-valverde/" target="_blank"><i class="bi bi-linkedin"></i></a>
+          <a href="https://www.behance.net/estudiosventorrillo" target="_blank"><i class="bi bi-behance"></i></a>
+          <a href="https://www.instagram.com/estudiosventorrillo/?hl=es" target="_blank"><i class="bi bi-instagram"></i></a>
+      </div>
+  </footer>
+
+</div>
+
+<div class="modal-overlay" id="modal-tutorial">
+  <div class="modal" style="max-width: 450px;">
+    <div class="modal-title" style="font-size: 1.8rem;">¡Bienvenido al Companion!</div>
+    <div class="modal-sub" style="margin-bottom: 20px; color: var(--text-main);">Tu asistente rápido y no oficial para el álbum de la Copa del Mundo 2026.</div>
+
+    <div style="display: flex; flex-direction: column; gap: 14px; margin-bottom: 26px; font-family: 'Barlow Condensed', sans-serif; font-size: 1.05rem;">
+      <div style="display: flex; gap: 12px; align-items: flex-start;">
+        <div style="color: var(--yellow-gold); font-size: 1.3rem;">➕</div>
+        <div style="color: var(--text-dim); line-height: 1.3;"><strong style="color: var(--white); font-weight: 700;">Registra tus cromos:</strong> Añade rápidamente los números que te van tocando. Detectaremos su categoría automáticamente.</div>
+      </div>
+      <div style="display: flex; gap: 12px; align-items: flex-start;">
+        <div style="color: var(--yellow-gold); font-size: 1.3rem;">🎛️</div>
+        <div style="color: var(--text-dim); line-height: 1.3;"><strong style="color: var(--white); font-weight: 700;">Filtra y Ordena:</strong> En las pestañas de cartas, usa el embudo para seleccionar múltiples etiquetas y la flecha para invertir el orden.</div>
+      </div>
+      <div style="display: flex; gap: 12px; align-items: flex-start;">
+        <div style="color: var(--yellow-gold); font-size: 1.3rem;">⭐</div>
+        <div style="color: var(--text-dim); line-height: 1.3;"><strong style="color: var(--white); font-weight: 700;">Guarda y Reserva:</strong> Gestiona tus cartas repetidas añadiéndoles notas para intercambios o marcándolas como favoritos.</div>
+      </div>
+      <div style="display: flex; gap: 12px; align-items: flex-start; margin-top: 4px; padding: 10px; background: rgba(220,53,69,0.1); border: 1px solid rgba(220,53,69,0.3); border-radius: 8px;">
+        <div style="color: #ff6b6b; font-size: 1.3rem;">💾</div>
+        <div style="color: var(--text-main); line-height: 1.3; font-size: 0.95rem;">Toda tu colección se guarda localmente en tu navegador. <strong style="color: #ff6b6b;">¡No borres la caché/historial de tu navegador o perderás tus datos!</strong></div>
+      </div>
+    </div>
+
+    <button class="btn btn-primary" style="width: 100%; font-size: 1rem; padding: 12px;" onclick="closeTutorial()">¡Empezar mi colección!</button>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-filter">
+  <div class="modal filter-modal">
+    <div class="modal-title">Filtrar por Categoría</div>
+    <div class="modal-sub">Selecciona una o varias etiquetas</div>
+    
+    <div class="filter-grid" id="filter-modal-grid"></div>
+
+    <div class="modal-btns" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 0; width: 100%;">
+      <button class="btn btn-danger" style="padding: 10px 0; font-size: 0.85rem;" onclick="clearFilters()">Borrar</button>
+      <button class="btn btn-secondary" style="padding: 10px 0; font-size: 0.85rem;" onclick="closeModal('modal-filter')">Cancelar</button>
+      <button class="btn btn-primary" style="padding: 10px 0; font-size: 0.85rem;" onclick="applyFilters()">Aplicar</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-fav">
+  <div class="modal">
+    <div class="modal-title" id="modal-fav-title">Gestionar Cromo</div>
+    <div class="modal-sub" id="modal-fav-sub">Cromo #000 · Categoría</div>
+    <div class="search-label" style="margin-bottom:8px">Alias o Nota (Ej: Para Carlos)</div>
+    <input type="text" id="modal-fav-name" placeholder="Escribe aquí tu nota..." maxlength="50" style="margin-bottom: 12px; width: 100%;">
+    <label style="display: flex; align-items: center; gap: 10px; margin-top: 10px; cursor: pointer; user-select: none;">
+      <input type="checkbox" id="modal-is-fav" style="width: 18px; height: 18px; accent-color: var(--yellow-gold);">
+      <span style="color: var(--white); font-weight: 500;">Destacar como Fichaje Favorito</span>
+    </label>
+    <div class="modal-btns">
+      <button class="btn btn-secondary" onclick="closeModal('modal-fav')">Cancelar</button>
+      <button class="btn btn-primary" onclick="confirmFav()">Guardar</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-del">
+  <div class="modal">
+    <div class="modal-title">Eliminar Cromo</div>
+    <div class="modal-sub" id="modal-del-sub">¿Seguro que quieres eliminar el cromo #000?</div>
+    <div style="color:var(--text-dim);font-size:0.85rem;margin-top:4px">Esta acción eliminará el cromo de tu álbum pero no de tus reservas.</div>
+    <div class="modal-btns">
+      <button class="btn btn-secondary" onclick="closeModal('modal-del')">Cancelar</button>
+      <button class="btn btn-danger" onclick="confirmDelete()">Eliminar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const TOTAL = 630;
+const COUNTRIES = ["alg", "arg", "aus", "aut", "bel", "bra", "can", "cpv", "col", "cro", "cuw", "ecu", "egy", "eng", "fra", "ger", "gha", "hai", "irn", "civ", "jpn", "jor", "kor", "mex", "mar", "ned", "nzl", "nor", "pan", "par", "por", "qat", "ksa", "sco", "sen", "rsa", "esp", "sui", "tun", "usa", "uru", "uzb"];
+
+const CATEGORIES = [
+  { key: 'golden', label: 'Golden Ballers' },
+  { key: 'fanfav', label: 'Fan Favs' },
+  { key: 'escudo', label: 'Escudos' },
+  { key: 'icon', label: 'Icons' },
+  { key: 'normal', label: 'Países' },
+  { key: 'contender', label: 'Contenders' },
+  { key: 'keeper', label: 'Top Keepers' },
+  { key: 'rock', label: 'Defensive Rocks' },
+  { key: 'maestro', label: 'Midfield Maestros' },
+  { key: 'machine', label: 'Goal Machines' },
+  { key: 'rookie', label: 'Master Rookies' },
+  { key: 'special', label: 'Especiales' }
+];
+
+let owned = []; let recent = []; let favs = [];
+let activeFiltersOwned = []; let activeFiltersMissing = [];
+let sortDirectionOwned = 1; let sortDirectionMissing = 1;
+let activeFilterFav = 'all'; 
+
+let pendingFavNum = null; let pendingDelNum = null;
+let msgTimeout = null; let currentFilterType = null; let tempModalFilters = []; 
+
+function save(key, data) { localStorage.setItem(key, JSON.stringify(data)); }
+function load(key, defaultData) { const d = localStorage.getItem(key); return d ? JSON.parse(d) : defaultData; }
+
+function init() {
+  let rawOwned = load('p26_owned', []); 
+  
+  if (rawOwned.length > 0 && typeof rawOwned[0] === 'number') {
+    owned = rawOwned.map(n => ({ num: n, date: Date.now() }));
+    save('p26_owned', owned);
+  } else {
+    owned = rawOwned; 
+  }
+
+  recent = load('p26_recent', []); 
+  if (recent.length > 12) { recent = recent.slice(0, 12); save('p26_recent', recent); }
+
+  favs = load('p26_favs', []);
+  
+  renderAll();
+
+  // Mostrar tutorial si es la primera vez
+  if (!load('p26_tutorial_seen', false)) {
+    openModal('modal-tutorial');
+  }
+}
+
+// Función para cerrar el tutorial y guardar que ya se vio
+function closeTutorial() {
+  save('p26_tutorial_seen', true);
+  closeModal('modal-tutorial');
+}
+
+function getCardDetails(n) {
+  let key = 'soon'; let label = 'Pronto'; let isRare = false;
+  if (n >= 1 && n <= 9) { key = 'golden'; label = 'Golden Ballers'; isRare = true; }
+  else if (n >= 10 && n <= 513) {
+    const offset = n - 10;
+    const cIdx = Math.floor(offset / 12);
+    const cardIdx = offset % 12;
+    const cCode = COUNTRIES[cIdx].toUpperCase();
+    
+    if (cardIdx === 0) { key = 'fanfav'; label = cCode + ' Fan Fav'; isRare = true; }
+    else if (cardIdx === 1) { key = 'escudo'; label = cCode + ' Escudo'; isRare = true; }
+    else if (cardIdx === 2) { key = 'icon'; label = cCode + ' Icon'; isRare = true; }
+    else { key = 'normal'; label = cCode; isRare = false; }
+  }
+  else if (n >= 514 && n <= 549) { key = 'contender'; label = 'Contenders'; isRare = true; }
+  else if (n >= 550 && n <= 558) { key = 'keeper'; label = 'Top Keepers'; isRare = true; }
+  else if (n >= 559 && n <= 567) { key = 'rock'; label = 'Defensive Rocks'; isRare = true; }
+  else if (n >= 568 && n <= 585) { key = 'maestro'; label = 'Midfield Maestros'; isRare = true; }
+  else if (n >= 586 && n <= 607) { key = 'machine'; label = 'Goal Machines'; isRare = true; }
+  else if (n >= 608 && n <= 623) { key = 'rookie'; label = 'Master Rookies'; isRare = true; }
+  else if (n >= 624 && n <= 630) { key = 'special'; label = 'Especiales'; isRare = true; }
+  
+  return { key, label, isRare };
+}
+
+function catColor(key) {
+  const map = { golden:'#f5c518', fanfav:'#ff9800', escudo:'#ffeb3b', icon:'#e91e63', normal:'#4caf50', contender:'#42a5f5', keeper:'#ab47bc', rock:'#78909c', maestro:'#26c6da', machine:'#ef5350', rookie:'#ffa726', special:'#ec407a' };
+  return map[key] || '#888';
+}
+
+function openTab(tabId, clickedCard) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.stat-card.tab-trigger').forEach(c => c.classList.remove('active-tab'));
+  document.getElementById('tab-' + tabId).classList.add('active');
+  if (clickedCard) clickedCard.classList.add('active-tab');
+}
+
+function showMessage(elementId, htmlContent) {
+    const box = document.getElementById(elementId);
+    box.innerHTML = htmlContent;
+    clearTimeout(msgTimeout);
+    msgTimeout = setTimeout(() => { box.innerHTML = ''; }, 3500); 
+}
+
+function addSticker() {
+  const inp = document.getElementById('input-add'); const n = parseInt(inp.value);
+  if (isNaN(n) || n < 1 || n > TOTAL) { 
+      showMessage('msg-box', `<div class="msg msg-err"><span class="msg-icon">!</span> Introduce un número entre 1 y ${TOTAL}</div>`); 
+      return; 
+  }
+  
+  const details = getCardDetails(n);
+  const catBadge = `<span class="msg-cat" style="background:${catColor(details.key)}22;color:${catColor(details.key)};border:1px solid ${catColor(details.key)}44">${details.label}</span>`;
+  
+  if (owned.some(item => item.num === n)) {
+    showMessage('msg-box', `<div class="msg msg-dup"><span class="msg-icon">i</span> Ya tienes el cromo <strong>#${n}</strong> registrado${catBadge}</div>`);
+  } else {
+    owned.push({ num: n, date: Date.now() }); 
+    recent.unshift(n); if (recent.length > 12) recent.pop();
+    
+    save('p26_owned', owned); save('p26_recent', recent);
+    showMessage('msg-box', `<div class="msg msg-new"><span class="msg-icon">V</span> ¡Nueva carta desbloqueada! <strong>#${n}</strong>${catBadge}</div>`);
+    renderAll();
+  }
+  inp.value = ''; inp.focus();
+}
+
+document.getElementById('input-add').addEventListener('keydown', e => { if (e.key === 'Enter') addSticker(); });
+
+function renderStats() {
+  const oCount = owned.length;
+  document.getElementById('s-owned').textContent = oCount;
+  document.getElementById('s-owned-pct').textContent = ((oCount / TOTAL) * 100).toFixed(1) + '%';
+  document.getElementById('s-missing').textContent = TOTAL - oCount;
+  
+  const favCount = favs.filter(f => f.isFav !== false).length;
+  const resCount = favs.filter(f => f.isFav === false).length;
+  document.getElementById('s-guardados').textContent = favCount + resCount;
+  document.getElementById('progress').style.width = (oCount / TOTAL * 100).toFixed(1) + '%';
+}
+
+function renderAll() { renderStats(); renderRecent(); renderOwned(); renderMissing(); renderFavs(); }
+
+function stickerEl(n, isOwned) {
+  const details = getCardDetails(n);
+  const fav = favs.find(f => f.num === n);
+  
+  const fav_cls = (fav && fav.isFav !== false) ? 'faved' : '';
+  const note_cls = (fav && fav.name) ? 'has-note' : '';
+  const owned_cls = isOwned ? 'owned' : 'missing';
+  let shortLabel = details.label.length > 13 ? details.label.substring(0,11) + '.' : details.label;
+  
+  return `<div class="sticker ${owned_cls} cat-${details.key} ${fav_cls} ${note_cls}" data-cat="${details.label}">
+    <div class="note-icon" title="Tiene reserva/nota">❗</div>
+    <div class="fav-icon" title="Favorito">★</div>
+    ${n}
+    <div class="cat-tiny">${shortLabel}</div>
+  </div>`;
+}
+
+function listItemEl(n, canDelete) {
+  const details = getCardDetails(n);
+  const fav = favs.find(f => f.num === n);
+  
+  let favLabelHtml = '';
+  if (fav) {
+      const isFavIcon = fav.isFav !== false;
+      const star = isFavIcon ? '<span style="color:var(--yellow-gold); margin-right:4px; font-size:1.1rem;">★</span>' : '';
+      favLabelHtml = `<span class="list-fav-tag" style="${!isFavIcon ? 'color: #42a5f5;' : ''}">${star}${fav.name || (isFavIcon ? 'Favorito' : 'Guardado')}</span>`;
+  } else { favLabelHtml = `<span class="list-fav-tag"></span>`; }
+  
+  const delBtn = canDelete ? `<button class="btn btn-danger" onclick="openDelete(${n})">Eliminar</button>` : '';
+  const favBtn = `<button class="btn btn-secondary" onclick="openFavModal(${n})">Gestionar</button>`;
+  
+  return `<div class="list-item">
+    <div class="list-num" style="color:${catColor(details.key)}">#${n}</div>
+    <div class="list-cat-badge" style="color:${catColor(details.key)}">${details.label}</div>
+    ${favLabelHtml}
+    <div class="list-actions">${favBtn}${delBtn}</div>
+  </div>`;
+}
+
+function renderRecent() { document.getElementById('recent-grid').innerHTML = recent.map(n => stickerEl(n, true)).join(''); }
+
+function openFilterModal(type) {
+  currentFilterType = type;
+  tempModalFilters = [...(type === 'owned' ? activeFiltersOwned : activeFiltersMissing)];
+  
+  const grid = document.getElementById('filter-modal-grid');
+  grid.innerHTML = CATEGORIES.map(cat => {
+    const isOn = tempModalFilters.includes(cat.key);
+    return `<div class="filter-chip cat-${cat.key} ${isOn ? 'on' : ''}" data-key="${cat.key}" onclick="toggleFilterChip(this)">${cat.label}</div>`;
+  }).join('');
+  openModal('modal-filter');
+}
+
+function toggleFilterChip(chipEl) {
+  const key = chipEl.dataset.key;
+  if (tempModalFilters.includes(key)) {
+    tempModalFilters = tempModalFilters.filter(k => k !== key); chipEl.classList.remove('on');
+  } else {
+    tempModalFilters.push(key); chipEl.classList.add('on');
+  }
+}
+
+function applyFilters() {
+  if (currentFilterType === 'owned') { activeFiltersOwned = [...tempModalFilters]; renderOwned(); } 
+  else { activeFiltersMissing = [...tempModalFilters]; renderMissing(); }
+  updateFilterIndicators(); closeModal('modal-filter');
+}
+
+function clearFilters() {
+  tempModalFilters = [];
+  document.querySelectorAll('#filter-modal-grid .filter-chip').forEach(chip => chip.classList.remove('on'));
+  applyFilters();
+}
+
+function updateFilterIndicators() {
+  const indOwned = document.getElementById('filter-indicator-owned');
+  const indMissing = document.getElementById('filter-indicator-missing');
+  if (activeFiltersOwned.length > 0) { indOwned.textContent = activeFiltersOwned.length; indOwned.style.display = 'flex'; } 
+  else { indOwned.style.display = 'none'; }
+  if (activeFiltersMissing.length > 0) { indMissing.textContent = activeFiltersMissing.length; indMissing.style.display = 'flex'; } 
+  else { indMissing.style.display = 'none'; }
+}
+
+function toggleSortDirection(type) {
+  const arrow = document.getElementById('sort-arrow-' + type);
+  if (type === 'owned') { sortDirectionOwned *= -1; arrow.classList.toggle('desc', sortDirectionOwned === -1); renderOwned(); } 
+  else { sortDirectionMissing *= -1; arrow.classList.toggle('desc', sortDirectionMissing === -1); renderMissing(); }
+}
+
+function renderOwned() {
+  let filtered = [...owned]; 
+  if (activeFiltersOwned.length > 0) { filtered = filtered.filter(item => activeFiltersOwned.includes(getCardDetails(item.num).key)); }
+  filtered.sort((a, b) => (a.num - b.num) * sortDirectionOwned);
+  document.getElementById('owned-count-label').textContent = `(${filtered.length} de ${owned.length})`;
+  
+  const list = document.getElementById('owned-list'); const empty = document.getElementById('owned-empty');
+  if (!filtered.length) { list.innerHTML = ''; empty.style.display = 'block'; return; }
+  empty.style.display = 'none'; list.innerHTML = filtered.map(item => listItemEl(item.num, true)).join('');
+}
+
+function renderMissing() {
+  const allNums = Array.from({length: TOTAL}, (_,i) => i+1);
+  const ownedNums = owned.map(item => item.num); 
+  let missing = allNums.filter(n => !ownedNums.includes(n)); 
+
+  if (activeFiltersMissing.length > 0) { missing = missing.filter(n => activeFiltersMissing.includes(getCardDetails(n).key)); }
+  if (sortDirectionMissing === -1) { missing.sort((a, b) => b - a); } else { missing.sort((a, b) => a - b); }
+
+  document.getElementById('missing-count-label').textContent = `(${missing.length})`;
+  const list = document.getElementById('missing-list'); const empty = document.getElementById('missing-empty');
+  
+  if (!missing.length) { list.innerHTML = ''; empty.style.display = 'block'; return; }
+  empty.style.display = 'none';
+  list.innerHTML = missing.map(n => {
+    const details = getCardDetails(n);
+    const favBtn = `<button class="btn btn-secondary" onclick="openFavModal(${n})">Gestionar</button>`;
+    const addBtn = `<button class="btn btn-primary" onclick="quickAdd(${n})">Añadir</button>`;
+    const fav = favs.find(f => f.num === n); let favLabelHtml = '';
+    if (fav) {
+        const isFavIcon = fav.isFav !== false;
+        const star = isFavIcon ? '<span style="color:var(--yellow-gold); margin-right:4px;">★</span>' : '';
+        favLabelHtml = `<span class="list-fav-tag" style="${!isFavIcon ? 'color: #42a5f5;' : ''}">${star}${fav.name || 'Fav'}</span>`;
+    } else { favLabelHtml = `<span class="list-fav-tag"></span>`; }
+
+    return `<div class="list-item">
+      <div class="list-num" style="color:${catColor(details.key)}">#${n}</div>
+      <div class="list-cat-badge" style="color:${catColor(details.key)}">${details.label}</div>
+      ${favLabelHtml}
+      <div class="list-actions">${favBtn}${addBtn}</div>
+    </div>`;
+  }).join('');
+}
+
+function quickAdd(n) { document.getElementById('input-add').value = n; addSticker(); }
+
+function searchFav() {
+  const n = parseInt(document.getElementById('fav-num-input').value); const prev = document.getElementById('fav-preview');
+  if (isNaN(n) || n < 1 || n > TOTAL) { showMessage('fav-preview', `<div class="msg msg-err"><span class="msg-icon">!</span> Número inválido (1 - ${TOTAL})</div>`); return; }
+  
+  const details = getCardDetails(n); const isOwned = owned.some(item => item.num === n); const exist = favs.find(f => f.num === n);
+  prev.innerHTML = `<div class="fav-card">
+    <div class="fav-number" style="color:${catColor(details.key)}">#${n}</div>
+    <div class="fav-info">
+      <div class="fav-name">${details.label}</div>
+      <div class="fav-cat-label">${details.isRare ? '⭐ Carta Rara' : 'Carta Base'}</div>
+    </div>
+    <span class="fav-owned-badge ${isOwned?'yes':'no'}">${isOwned?'Lo tienes':'Te falta'}</span>
+    <button class="btn btn-primary" onclick="openFavModal(${n})">${exist?'Editar':'Gestionar'}</button>
+  </div>`;
+}
+document.getElementById('fav-num-input').addEventListener('keydown', e => { if (e.key==='Enter') searchFav(); });
+
+function setFavFilter(mode) {
+  activeFilterFav = mode;
+  document.getElementById('ff-all').classList.toggle('on', mode === 'all');
+  document.getElementById('ff-favs').classList.toggle('on', mode === 'favs');
+  document.getElementById('ff-res').classList.toggle('on', mode === 'res');
+  renderFavs();
+}
+
+function renderFavs() {
+  let filteredFavs = favs;
+  if (activeFilterFav === 'favs') { filteredFavs = favs.filter(f => f.isFav !== false); } 
+  else if (activeFilterFav === 'res') { filteredFavs = favs.filter(f => f.isFav === false); }
+
+  document.getElementById('fav-total-label').textContent = `(${filteredFavs.length})`;
+  const list = document.getElementById('fav-list'); const empty = document.getElementById('fav-empty');
+  
+  if (!filteredFavs.length) { list.innerHTML = ''; empty.style.display = 'block'; return; }
+  empty.style.display = 'none';
+  
+  list.innerHTML = filteredFavs.map(f => {
+    const details = getCardDetails(f.num); const isOwned = owned.some(item => item.num === f.num); 
+    const isFav = f.isFav !== false; const badgeFav = isFav ? `<span style="color:var(--yellow-gold); font-size: 1.2rem; line-height: 0;" title="Favorito">★</span>` : '';
+    
+    return `<div class="fav-card" style="margin-bottom:6px">
+      <div class="fav-number" style="color:${catColor(details.key)}">#${f.num}</div>
+      <div class="fav-info">
+        <div class="fav-name" style="display:flex; align-items:center; gap:6px;">${f.name || '<span style="color:#888; font-style:italic;">(Sin nota)</span>'} ${badgeFav}</div>
+        <div class="fav-cat-label">${details.label}</div>
+      </div>
+      <span class="fav-owned-badge ${isOwned?'yes':'no'}">${isOwned?'Lo tienes':'Te falta'}</span>
+      <div style="display:flex; gap:6px; flex-shrink:0;">
+          <button class="btn btn-secondary" style="padding: 6px 12px; font-size: 0.75rem;" onclick="openFavModal(${f.num})">Editar</button>
+          <button class="btn btn-danger" onclick="removeFav(${f.num})">Quitar</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function openFavModal(n) {
+  pendingFavNum = n; const details = getCardDetails(n); const exist = favs.find(f => f.num === n);
+  document.getElementById('modal-fav-title').textContent = exist ? 'Editar Gestión' : 'Guardar / Reservar';
+  document.getElementById('modal-fav-sub').textContent = `Cromo #${n} · ${details.label}`;
+  document.getElementById('modal-fav-name').value = exist ? (exist.name || '') : '';
+  document.getElementById('modal-is-fav').checked = exist ? (exist.isFav !== false) : true;
+  openModal('modal-fav');
+}
+
+function confirmFav() {
+  const name = document.getElementById('modal-fav-name').value.trim(); const isFav = document.getElementById('modal-is-fav').checked;
+  const existIndex = favs.findIndex(f => f.num === pendingFavNum);
+  
+  if (!name && !isFav) { if (existIndex >= 0) favs.splice(existIndex, 1); } 
+  else {
+    if (existIndex >= 0) { favs[existIndex].name = name; favs[existIndex].isFav = isFav; } 
+    else { favs.push({ num: pendingFavNum, name: name, isFav: isFav }); favs.sort((a,b) => a.num - b.num); }
+  }
+  
+  save('p26_favs', favs); closeModal('modal-fav');
+  if (document.getElementById('fav-num-input').value == pendingFavNum) searchFav();
+  renderAll();
+}
+
+function removeFav(n) { favs = favs.filter(f => f.num !== n); save('p26_favs', favs); if (document.getElementById('fav-num-input').value == n) searchFav(); renderAll(); }
+function openDelete(n) { pendingDelNum = n; document.getElementById('modal-del-sub').textContent = `¿Seguro que quieres eliminar el cromo #${n}?`; openModal('modal-del'); }
+function confirmDelete() { 
+  owned = owned.filter(item => item.num !== pendingDelNum); recent = recent.filter(x => x !== pendingDelNum); 
+  save('p26_owned', owned); save('p26_recent', recent); closeModal('modal-del'); renderAll(); 
+}
+
+function openModal(id) { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+document.querySelectorAll('.modal-overlay').forEach(m => { m.addEventListener('click', e => { if (e.target === m) m.classList.remove('open'); }); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') document.querySelectorAll('.modal-overlay.open').forEach(m => m.classList.remove('open')); });
+
+init();
+</script>
+</body>
+</html>
