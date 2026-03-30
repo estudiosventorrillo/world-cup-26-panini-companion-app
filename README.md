@@ -32,7 +32,7 @@ Este proyecto utiliza una estética **"Modern Sports UI"**, que combina la palet
 
 ## ⚽ Senda del Coleccionista
 
-**🌐 Accede a la aplicación online:** [https://estudiosventorrillo.github.io/world-cup-26-panini-companion-app/](https://estudiosventorrillo.github.io/world-cup-26-panini-companion-app/) 
+**🌐 Accede a la aplicación online:** [https://fawlworks.github.io/world-cup-26-panini-companion-app/](https://fawlworks.github.io/world-cup-26-panini-companion-app/) 
 
 ---
 
@@ -43,8 +43,8 @@ Este proyecto utiliza una estética **"Modern Sports UI"**, que combina la palet
 ¿Te gusta el proyecto o necesitas un perfil creativo para tu próximo negocio? ¡Hablemos!
 
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=flat&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/juanluis-valverde/) 
-[![Behance](https://img.shields.io/badge/Behance-1769ff?style=flat&logo=behance&logoColor=white)](https://www.behance.net/estudiosventorrillo) 
-[![Instagram](https://img.shields.io/badge/Instagram-E4405F?style=flat&logo=instagram&logoColor=white)](https://www.instagram.com/estudiosventorrillo/?hl=es)
+[![Behance](https://img.shields.io/badge/Behance-1769ff?style=flat&logo=behance&logoColor=white)](https://www.behance.net/fawlworks) 
+[![Instagram](https://img.shields.io/badge/Instagram-E4405F?style=flat&logo=instagram&logoColor=white)](https://www.instagram.com/fawlworks/?hl=es)
 
 ---
 
