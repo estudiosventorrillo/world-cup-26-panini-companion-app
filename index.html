@@ -88,7 +88,7 @@
   .panel.active { display: block; }
   @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
 
-  /* STATS BAR (Navegación Principal - 2x2) */
+  /* STATS BAR (Navegación Principal - 2x2 / 3x2) */
   .stats-bar { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; margin-bottom: 30px; }
   .stat-card { 
     background: var(--card-bg); border: 1px solid var(--gray-border); border-radius: var(--radius); 
@@ -388,6 +388,17 @@
     .fav-owned-badge { margin-right: auto; }
     .filter-grid { grid-template-columns: 1fr; } 
   }
+
+  /* PORCENTAJES Y LOGROS */
+  .pct-row { background: rgba(255,255,255,0.03); border: 1px solid var(--gray-border); border-radius: 8px; padding: 12px; margin-bottom: 8px; transition: border-color 0.2s, background 0.2s; }
+  .pct-row.completed { border-color: var(--yellow-gold); background: rgba(245,197,24,0.08); box-shadow: 0 0 10px rgba(245,197,24,0.1); }
+  .pct-header { display: flex; justify-content: space-between; font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 0.95rem; color: var(--text-dim); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px; }
+  .pct-row.completed .pct-header { color: var(--yellow-gold); }
+  .logro-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(90px, 1fr)); gap: 12px; }
+  .logro-badge { background: var(--card-bg); border: 2px solid var(--yellow-gold); border-radius: 12px; padding: 16px 10px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; color: var(--yellow-gold); box-shadow: 0 4px 15px rgba(245,197,24,0.2); animation: popIn 0.3s ease; }
+  .logro-badge .icon { font-size: 2rem; margin-bottom: 6px; line-height: 1; }
+  .logro-badge .name { font-family: 'Barlow Condensed', sans-serif; font-size: 0.75rem; font-weight: 700; line-height: 1.2; text-transform: uppercase; letter-spacing: 0.5px; }
+
 </style>
 </head>
 <body ontouchstart=""> 
@@ -408,7 +419,7 @@
     </div>
     <div class="stat-card tab-trigger" onclick="openTab('mis-cromos', this)">
       <div class="stat-num" id="s-owned">0</div>
-      <div class="stat-label">Tienes (<span id="s-owned-pct">0%</span>)</div>
+      <div class="stat-label">Tienes</div>
       <div class="progress-bar-wrap"><div class="progress-bar" id="progress" style="width:0%"></div></div>
     </div>
     <div class="stat-card missing tab-trigger" onclick="openTab('faltan', this)">
@@ -418,6 +429,14 @@
     <div class="stat-card secondary tab-trigger" onclick="openTab('favoritos', this)">
       <div class="stat-num" id="s-guardados" style="color:#42a5f5;">0</div>
       <div class="stat-label">Guardados</div>
+    </div>
+    <div class="stat-card secondary tab-trigger" onclick="openTab('porcentajes', this)">
+      <div class="stat-num" id="s-pct-total">0%</div>
+      <div class="stat-label">Porcentajes</div>
+    </div>
+    <div class="stat-card secondary tab-trigger" onclick="openTab('logros', this)">
+      <div class="stat-num" id="s-logros">0</div>
+      <div class="stat-label">Logros</div>
     </div>
   </div>
 
@@ -506,6 +525,21 @@
     </div>
   </div>
 
+  <div class="panel" id="tab-porcentajes">
+    <div class="section-title" style="margin-bottom:16px;">Completado por Selecciones</div>
+    <div id="pct-countries-list"></div>
+    <div class="section-title" style="margin-top:24px; margin-bottom:16px;">Completado Especiales</div>
+    <div id="pct-specials-list"></div>
+  </div>
+
+  <div class="panel" id="tab-logros">
+    <div class="section-title" style="margin-bottom:16px;">Tus Medallas <span id="logros-count"></span></div>
+    <div id="logros-list" class="logro-grid"></div>
+    <div class="empty-state" id="logros-empty" style="display:none">
+      <div style="text-align:center; padding: 20px; color: var(--text-dim);">Aún no tienes medallas. ¡Completa al 100% una selección o categoría especial para ganar la primera!</div>
+    </div>
+  </div>
+
   <footer class="credits">
       <p class="mb-2">Designed and Developed by Juan Luis Valverde</p>
       <div class="social-links">
@@ -542,6 +576,30 @@
     </div>
 
     <button class="btn btn-primary" style="width: 100%; font-size: 1rem; padding: 12px;" onclick="closeTutorial()">¡Empezar mi colección!</button>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-update">
+  <div class="modal" style="max-width: 450px;">
+    <div class="modal-title" style="font-size: 1.8rem;">¡Novedades de la App! 🚀</div>
+    <div class="modal-sub" style="margin-bottom: 20px; color: var(--text-main);">Hemos añadido nuevas herramientas para ti.</div>
+
+    <div style="display: flex; flex-direction: column; gap: 14px; margin-bottom: 26px; font-family: 'Barlow Condensed', sans-serif; font-size: 1.05rem;">
+      <div style="display: flex; gap: 12px; align-items: flex-start;">
+        <div style="color: var(--yellow-gold); font-size: 1.3rem;">📊</div>
+        <div style="color: var(--text-dim); line-height: 1.3;"><strong style="color: var(--white); font-weight: 700;">Porcentajes:</strong> Consulta el nivel de completado de cada selección y categoría especial al detalle.</div>
+      </div>
+      <div style="display: flex; gap: 12px; align-items: flex-start;">
+        <div style="color: var(--yellow-gold); font-size: 1.3rem;">🎖️</div>
+        <div style="color: var(--text-dim); line-height: 1.3;"><strong style="color: var(--white); font-weight: 700;">Logros:</strong> Gana medallas exclusivas cada vez que completes al 100% una selección o un grupo especial.</div>
+      </div>
+      <div style="display: flex; gap: 12px; align-items: flex-start;">
+        <div style="color: var(--yellow-gold); font-size: 1.3rem;">⚙️</div>
+        <div style="color: var(--text-dim); line-height: 1.3;"><strong style="color: var(--white); font-weight: 700;">Mejoras:</strong> Subdivisión de Contenders y optimización de las búsquedas rápidas de Guardados.</div>
+      </div>
+    </div>
+
+    <button class="btn btn-primary" style="width: 100%; font-size: 1rem; padding: 12px;" onclick="closeUpdate()">¡Entendido!</button>
   </div>
 </div>
 
@@ -608,6 +666,27 @@ const CATEGORIES = [
   { key: 'special', label: 'Especiales' }
 ];
 
+// Generación de array dinámico para medir Porcentajes y Logros
+let TARGETS = [];
+TARGETS.push({ id: 'golden', label: 'Golden Ballers', start: 1, end: 9, type: 'special' });
+COUNTRIES.forEach((cCode, i) => {
+    const start = 10 + (i * 12);
+    TARGETS.push({ id: cCode, label: cCode.toUpperCase(), start: start, end: start + 11, type: 'country' });
+});
+TARGETS.push({ id: 'cont_esc', label: 'Escudos Contender', start: 514, end: 519, type: 'country' });
+TARGETS.push({ id: 'cont_den', label: 'DEN Contender', start: 520, end: 524, type: 'country' });
+TARGETS.push({ id: 'cont_ita', label: 'ITA Contender', start: 525, end: 529, type: 'country' });
+TARGETS.push({ id: 'cont_jam', label: 'JAM Contender', start: 530, end: 534, type: 'country' });
+TARGETS.push({ id: 'cont_pol', label: 'POL Contender', start: 535, end: 539, type: 'country' });
+TARGETS.push({ id: 'cont_swe', label: 'SWE Contender', start: 540, end: 544, type: 'country' });
+TARGETS.push({ id: 'cont_tur', label: 'TUR Contender', start: 545, end: 549, type: 'country' });
+TARGETS.push({ id: 'keeper', label: 'Top Keepers', start: 550, end: 558, type: 'special' });
+TARGETS.push({ id: 'rock', label: 'Defensive Rocks', start: 559, end: 567, type: 'special' });
+TARGETS.push({ id: 'maestro', label: 'Midfield Maestros', start: 568, end: 585, type: 'special' });
+TARGETS.push({ id: 'machine', label: 'Goal Machines', start: 586, end: 607, type: 'special' });
+TARGETS.push({ id: 'rookie', label: 'Master Rookies', start: 608, end: 623, type: 'special' });
+TARGETS.push({ id: 'special', label: 'Especiales', start: 624, end: 630, type: 'special' });
+
 let owned = []; let recent = []; let favs = [];
 let activeFiltersOwned = []; let activeFiltersMissing = []; let activeFiltersFav = [];
 let sortDirectionOwned = 1; let sortDirectionMissing = 1; let sortDirectionFav = 1;
@@ -615,6 +694,7 @@ let activeFilterFav = 'all';
 
 let pendingFavNum = null; let pendingDelNum = null;
 let msgTimeout = null; let currentFilterType = null; let tempModalFilters = []; 
+let favPreviewTimeout = null;
 
 function save(key, data) { localStorage.setItem(key, JSON.stringify(data)); }
 function load(key, defaultData) { const d = localStorage.getItem(key); return d ? JSON.parse(d) : defaultData; }
@@ -636,14 +716,23 @@ function init() {
   
   renderAll();
 
+  // Gestión de ventanas modales de Novedades / Bienvenida
   if (!load('p26_tutorial_seen', false)) {
     openModal('modal-tutorial');
+    save('p26_update_v2_seen', true); // Si es usuario nuevo, no necesita ver la de update
+  } else if (!load('p26_update_v2_seen', false)) {
+    openModal('modal-update');
   }
 }
 
 function closeTutorial() {
   save('p26_tutorial_seen', true);
   closeModal('modal-tutorial');
+}
+
+function closeUpdate() {
+  save('p26_update_v2_seen', true);
+  closeModal('modal-update');
 }
 
 function getCardDetails(n) {
@@ -660,7 +749,18 @@ function getCardDetails(n) {
     else if (cardIdx === 2) { key = 'icon'; label = cCode + ' Icon'; isRare = true; }
     else { key = 'normal'; label = cCode; isRare = false; }
   }
-  else if (n >= 514 && n <= 549) { key = 'contender'; label = 'Contenders'; isRare = true; }
+  else if (n >= 514 && n <= 549) { 
+    key = 'contender'; 
+    isRare = true;
+    if (n >= 514 && n <= 519) label = 'Escudos Contender';
+    else if (n >= 520 && n <= 524) label = 'DEN Contender';
+    else if (n >= 525 && n <= 529) label = 'ITA Contender';
+    else if (n >= 530 && n <= 534) label = 'JAM Contender';
+    else if (n >= 535 && n <= 539) label = 'POL Contender';
+    else if (n >= 540 && n <= 544) label = 'SWE Contender';
+    else if (n >= 545 && n <= 549) label = 'TUR Contender';
+    else label = 'Otros Contenders';
+  }
   else if (n >= 550 && n <= 558) { key = 'keeper'; label = 'Top Keepers'; isRare = true; }
   else if (n >= 559 && n <= 567) { key = 'rock'; label = 'Defensive Rocks'; isRare = true; }
   else if (n >= 568 && n <= 585) { key = 'maestro'; label = 'Midfield Maestros'; isRare = true; }
@@ -718,7 +818,6 @@ document.getElementById('input-add').addEventListener('keydown', e => { if (e.ke
 function renderStats() {
   const oCount = owned.length;
   document.getElementById('s-owned').textContent = oCount;
-  document.getElementById('s-owned-pct').textContent = ((oCount / TOTAL) * 100).toFixed(1) + '%';
   document.getElementById('s-missing').textContent = TOTAL - oCount;
   
   const favCount = favs.filter(f => f.isFav !== false).length;
@@ -727,7 +826,7 @@ function renderStats() {
   document.getElementById('progress').style.width = (oCount / TOTAL * 100).toFixed(1) + '%';
 }
 
-function renderAll() { renderStats(); renderRecent(); renderOwned(); renderMissing(); renderFavs(); }
+function renderAll() { renderStats(); renderRecent(); renderOwned(); renderMissing(); renderFavs(); renderPorcentajes(); }
 
 function stickerEl(n, isOwned) {
   const details = getCardDetails(n);
@@ -872,7 +971,64 @@ function renderMissing() {
   }).join('');
 }
 
+function renderPorcentajes() {
+  const ownedNums = owned.map(o => o.num);
+  let htmlCountries = '';
+  let htmlSpecials = '';
+  let logrosCount = 0;
+  let htmlLogros = '';
+
+  TARGETS.forEach(t => {
+    let total = t.end - t.start + 1;
+    let count = 0;
+    for (let n = t.start; n <= t.end; n++) {
+        if (ownedNums.includes(n)) count++;
+    }
+    let pct = Math.floor((count / total) * 100);
+    let isCompleted = count === total;
+
+    let rowHtml = `
+    <div class="pct-row ${isCompleted ? 'completed' : ''}">
+        <div class="pct-header"><span>${t.label}</span> <span>${count} / ${total} (${pct}%)</span></div>
+        <div class="progress-bar-wrap"><div class="progress-bar" style="width:${pct}%; ${isCompleted ? 'background: linear-gradient(90deg, #f5c518, #ffe066);' : ''}"></div></div>
+    </div>`;
+
+    if (t.type === 'country') htmlCountries += rowHtml;
+    else htmlSpecials += rowHtml;
+
+    if (isCompleted) {
+        logrosCount++;
+        htmlLogros += `<div class="logro-badge" title="Has completado ${t.label}"><div class="icon">🎖️</div><div class="name">${t.label}</div></div>`;
+    }
+  });
+
+  document.getElementById('pct-countries-list').innerHTML = htmlCountries;
+  document.getElementById('pct-specials-list').innerHTML = htmlSpecials;
+
+  document.getElementById('s-pct-total').textContent = ((owned.length / TOTAL) * 100).toFixed(1) + '%';
+  document.getElementById('s-logros').textContent = logrosCount;
+  document.getElementById('logros-count').textContent = `(${logrosCount})`;
+
+  const logrosList = document.getElementById('logros-list');
+  const logrosEmpty = document.getElementById('logros-empty');
+  if (logrosCount === 0) {
+      logrosList.innerHTML = '';
+      logrosEmpty.style.display = 'block';
+  } else {
+      logrosList.innerHTML = htmlLogros;
+      logrosEmpty.style.display = 'none';
+  }
+}
+
 function quickAdd(n) { document.getElementById('input-add').value = n; addSticker(); }
+
+// Ocultado con Delay Inteligente para la "Pastilla" de Guardados
+function triggerFavPreviewHide() {
+  if (favPreviewTimeout) clearTimeout(favPreviewTimeout);
+  favPreviewTimeout = setTimeout(() => {
+    document.getElementById('fav-preview').innerHTML = '';
+  }, 5000);
+}
 
 function searchFav() {
   const n = parseInt(document.getElementById('fav-num-input').value); const prev = document.getElementById('fav-preview');
@@ -888,7 +1044,11 @@ function searchFav() {
     <span class="fav-owned-badge ${isOwned?'yes':'no'}">${isOwned?'Lo tienes':'Te falta'}</span>
     <button class="btn btn-primary" onclick="openFavModal(${n})">${exist?'Editar':'Gestionar'}</button>
   </div>`;
+
+  document.getElementById('fav-num-input').value = ''; // Limpiar input automáticamente tras buscar
+  triggerFavPreviewHide(); // Arrancar la cuenta atrás de 5s para que desaparezca la pastilla
 }
+
 document.getElementById('fav-num-input').addEventListener('keydown', e => { if (e.key==='Enter') searchFav(); });
 
 function setFavFilter(mode) {
@@ -937,6 +1097,7 @@ function renderFavs() {
 }
 
 function openFavModal(n) {
+  if (favPreviewTimeout) clearTimeout(favPreviewTimeout); // Pausar desaparición si pulsas gestionar
   pendingFavNum = n; const details = getCardDetails(n); const exist = favs.find(f => f.num === n);
   document.getElementById('modal-fav-title').textContent = exist ? 'Editar Gestión' : 'Guardar / Reservar';
   document.getElementById('modal-fav-sub').textContent = `Cromo #${n} · ${details.label}`;
@@ -956,11 +1117,11 @@ function confirmFav() {
   }
   
   save('p26_favs', favs); closeModal('modal-fav');
-  if (document.getElementById('fav-num-input').value == pendingFavNum) searchFav();
+  // if (document.getElementById('fav-num-input').value == pendingFavNum) searchFav(); // Ya no re-busca porque el input se vacía
   renderAll();
 }
 
-function removeFav(n) { favs = favs.filter(f => f.num !== n); save('p26_favs', favs); if (document.getElementById('fav-num-input').value == n) searchFav(); renderAll(); }
+function removeFav(n) { favs = favs.filter(f => f.num !== n); save('p26_favs', favs); renderAll(); }
 function openDelete(n) { pendingDelNum = n; document.getElementById('modal-del-sub').textContent = `¿Seguro que quieres eliminar el cromo #${n}?`; openModal('modal-del'); }
 function confirmDelete() { 
   owned = owned.filter(item => item.num !== pendingDelNum); recent = recent.filter(x => x !== pendingDelNum); 
@@ -968,10 +1129,27 @@ function confirmDelete() {
 }
 
 function openModal(id) { document.getElementById(id).classList.add('open'); }
-function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+function closeModal(id) { 
+  document.getElementById(id).classList.remove('open'); 
+  if (id === 'modal-fav') triggerFavPreviewHide(); // Reactivar timer al cerrar el modal de gestión
+}
 
-document.querySelectorAll('.modal-overlay').forEach(m => { m.addEventListener('click', e => { if (e.target === m) m.classList.remove('open'); }); });
-document.addEventListener('keydown', e => { if (e.key === 'Escape') document.querySelectorAll('.modal-overlay.open').forEach(m => m.classList.remove('open')); });
+document.querySelectorAll('.modal-overlay').forEach(m => { 
+  m.addEventListener('click', e => { 
+    if (e.target === m) {
+      m.classList.remove('open'); 
+      if (m.id === 'modal-fav') triggerFavPreviewHide(); // Reactivar timer
+    }
+  }); 
+});
+document.addEventListener('keydown', e => { 
+  if (e.key === 'Escape') {
+    document.querySelectorAll('.modal-overlay.open').forEach(m => {
+      m.classList.remove('open');
+      if (m.id === 'modal-fav') triggerFavPreviewHide(); // Reactivar timer
+    });
+  }
+});
 
 init();
 </script>
